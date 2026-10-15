@@ -58,6 +58,11 @@
     },
     "settingsTab": { "type": "string", "description": "Legacy: id of an existing shell settings tab." },
     "host": { "type": "string", "description": "Managed plugins only: QML host adapter path relative to the plugin UI root." },
+    "standalone": {
+      "type": "array",
+      "description": "Managed plugins only: QML standalone entries (paths relative to the plugin UI root). dots generates a root-level launcher per entry so they run with the shell tree as the config root and can import the core kit.",
+      "items": { "type": "string" }
+    },
     "provides": { "type": "object", "description": "Free-form contributions interpreted by consumers." }
   },
   "$defs": {
