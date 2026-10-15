@@ -43,6 +43,7 @@
     },
 
     "scope": { "type": "string", "pattern": "^[a-zA-Z0-9._-]+$", "description": "Settings namespace. Default: plugins.<id>." },
+    "defaults": { "type": "string", "description": "Path (repo-relative) to a settings fragment the plugin owns (e.g. \"defaults.json\" = {\"<scope>\": {...}}). dots merges it into settings.json on install; the user's values win. Keeps the plugin self-contained (code + UI + defaults)." },
     "toggle": { "type": "string", "description": "Dotted settings path of the master switch. Default: plugins.<id>.enabled." },
     "defaultEnabled": { "type": "boolean", "default": false },
 
