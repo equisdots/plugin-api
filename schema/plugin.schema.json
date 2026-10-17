@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/equisdots/plugin-api/schema/plugin.schema.json",
+  "title": "equisdots plugin manifest",
+  "description": "Normative schema for a plugin's plugin.json.",
+  "type": "object",
+  "required": ["id", "name", "version", "author", "description", "type"],
+  "additionalProperties": true,
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$", "description": "Stable slug; used in settings keys, folder names and the CLI." },
+    "name": { "type": "string", "minLength": 1 },
+    "version": { "type": "string", "pattern": "^[0-9]+(\\.[0-9]+)*$" },
+    "author": { "type": "string", "minLength": 1 },
+    "description": { "type": "string", "minLength": 1 },
+    "type": { "type": "string", "enum": ["shell", "hypr", "mixed", "cli"] },
+
+    "compat": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Version ranges the plugin requires. Absent = no constraint. Evaluated by plugin-api/scripts/plugins_compat.sh and lib/semver.lua.",
+      "properties": {
+        "host": { "$ref": "#/$defs/range" },
+        "shell": { "$ref": "#/$defs/range" },
+        "hyprland": { "$ref": "#/$defs/range" },
+        "quickshell": { "$ref": "#/$defs/range" },
+        "qt": { "$ref": "#/$defs/range" }
+      }
+    },
+
+    "api": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Capabilities the plugin requests from the shell host API.",
+      "properties": {
+        "requires": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["colors", "settings", "exec", "paths", "log", "catalog", "provides", "surface", "widgets", "stats", "nav", "notify"]
+          }
+        }
+      }
+    },
+
+    "scope": { "type": "string", "pattern": "^[a-zA-Z0-9._-]+$", "description": "Settings namespace. Default: plugins.<id>." },
+    "defaults": { "type": "string", "description": "Path (repo-relative) to a settings fragment the plugin owns (e.g. \"defaults.json\" = {\"<scope>\": {...}}). dots merges it into settings.json on install; the user's values win. Keeps the plugin self-contained (code + UI + defaults)." },
+    "toggle": { "type": "string", "description": "Dotted settings path of the master switch. Default: plugins.<id>.enabled." },
+    "defaultEnabled": { "type": "boolean", "default": false },
+
+    "settings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "page": { "type": "string" },
+        "label": { "type": "string" },
+        "icon": { "type": "string" },
+        "root": { "type": "string" }
+      }
+    },
+    "settingsTab": { "type": "string", "description": "Legacy: id of an existing shell settings tab." },
+    "host": { "type": "string", "description": "Managed plugins only: QML host adapter path relative to the plugin UI root." },
+    "standalone": {
+      "type": "array",
+      "description": "Managed plugins only: QML standalone entries (paths relative to the plugin UI root). dots generates a root-level launcher per entry so they run with the shell tree as the config root and can import the core kit.",
+      "items": { "type": "string" }
+    },
+    "provides": { "type": "object", "description": "Free-form contributions interpreted by consumers." }
+  },
+  "$defs": {
+    "range": {
+      "type": "string",
+      "description": "Semver range: >=, >, <=, <, =, ^, ~, bare, space/comma = AND.",
+      "pattern": "^\\s*(>=|<=|>|<|=|\\^|~)?\\s*[0-9]+(\\.[0-9]+)*(\\s+(>=|<=|>|<|=|\\^|~)?\\s*[0-9]+(\\.[0-9]+)*)*\\s*$"
+    }
+  }
+}

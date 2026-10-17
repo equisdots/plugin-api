@@ -1,0 +1,31 @@
+{
+  "comment": "Shared compat vectors for the bash (scripts/plugins_compat.sh) and Lua (lib/semver.lua) evaluators. scripts/test.sh runs both; they must agree.",
+  "vectors": [
+    { "compat": {},                                   "env": {},                                                              "state": "ok" },
+    { "compat": { "host": ">=1.0.0" },                "env": { "host": "1.0.0" },                                             "state": "ok" },
+    { "compat": { "host": ">=1.0 <2" },               "env": { "host": "1.4.2" },                                             "state": "ok" },
+    { "compat": { "host": ">=2.0" },                  "env": { "host": "1.0.0" },                                             "state": "incompat" },
+    { "compat": { "host": "^1.2.0" },                 "env": { "host": "1.5.0" },                                             "state": "ok" },
+    { "compat": { "host": "^1.2.0" },                 "env": { "host": "2.0.0" },                                             "state": "incompat" },
+    { "compat": { "quickshell": "~0.3.0" },           "env": { "quickshell": "0.3.2" },                                       "state": "ok" },
+    { "compat": { "quickshell": "~0.3.0" },           "env": { "quickshell": "0.4.0" },                                       "state": "incompat" },
+    { "compat": { "shell": ">=0.1.0" },               "env": { "shell": "0.1.0" },                                            "state": "ok" },
+    { "compat": { "hyprland": ">=0.55" },             "env": { "hyprland": "0.56.2" },                                        "state": "ok" },
+    { "compat": { "hyprland": ">=0.60" },             "env": { "hyprland": "0.56.2" },                                        "state": "incompat" },
+    { "compat": { "hyprland": ">=0.55" },             "env": {},                                                              "state": "warn" },
+    { "compat": { "host": "not a range" },            "env": { "host": "1.0.0" },                                             "state": "warn" },
+    { "compat": { "qt": ">=6.0", "host": ">=1.0" },   "env": { "qt": "6.8", "host": "1.0.0" },                                "state": "ok" }
+  ],
+  "scalar": {
+    "comment": "Direct semver.satisfies(ver, range) cases for the Lua unit test (0 ok, 1 violated, 2 unparsable).",
+    "cases": [
+      { "ver": "1.4.2", "range": ">=1.0 <2", "rc": 0 },
+      { "ver": "1.0.0", "range": ">=2.0",    "rc": 1 },
+      { "ver": "1.5.0", "range": "^1.2.0",   "rc": 0 },
+      { "ver": "2.0.0", "range": "^1.2.0",   "rc": 1 },
+      { "ver": "0.3.2", "range": "~0.3.0",   "rc": 0 },
+      { "ver": "0.4.0", "range": "~0.3.0",   "rc": 1 },
+      { "ver": "1.0.0", "range": "nope",     "rc": 2 }
+    ]
+  }
+}
